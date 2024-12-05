@@ -210,24 +210,31 @@ public struct DriverLibrary has key, store {
         game_state: &mut GameState,
         ctx: &mut TxContext
     ): u8 {
+        let out_balance;
         let total_value = (car.engine_level) as u64 
             + (driver.skill_level as u64);
             let position = if (total_value == 10) { 
-            let out_balance = balance::split(&mut game_state.treasury,game_state.total_pool );
+             out_balance = balance::split(&mut game_state.treasury,game_state.total_pool );
             let out_coin = from_balance(out_balance,ctx);
             public_transfer(out_coin, sender(ctx));
              0
                  }
         else if (total_value >= 8) { 
-              let out_balance = balance::split(&mut game_state.treasury,game_state.total_pool * 50 / 100 );
+            out_balance = balance::split(&mut game_state.treasury,game_state.total_pool * 50 / 100 );
             let out_coin = from_balance(out_balance,ctx);
             public_transfer(out_coin, sender(ctx));
             1
-             }
+            }
         else { 
             2
         };
-        
+
+        event::emit(RaceResult {
+            player: sender(ctx),
+            position: position,
+            reward: out_balance.value()
+        });
+         
          position
         
 
