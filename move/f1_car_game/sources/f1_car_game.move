@@ -1,42 +1,32 @@
 module f1_car_game::f1_car_game {
-    use std::string::{Self, String};
+    use std::string::{String};
     use sui::coin::{Coin, into_balance, from_balance};
-        use sui::coin;
+     use sui::coin;
     use sui::sui::SUI;
-    use sui::tx_context::{Self, TxContext,sender};
+    use sui::tx_context::{sender};
     use sui::transfer::{share_object, transfer, public_transfer};
-
     use sui::balance::{Self, Balance};
     use sui::event;
-    use sui::random;
-
-    const BASE_RETURN_RATE: u64 = 20; // 基础返还率 20%
-    const TOP_RETURN_RATE: u64 = 50;  // 顶配返还率 50%
-    
+    use sui::random::{Self, Random, new_generator};
     // error code
     const E_INSUFFICIENT_FUNDS: u64 = 1;
-    const E_NO_GUESSES_LEFT: u64 = 3;
     const E_INVALID_VALUE_RANGE: u64 = 4;
-    // 赛车和配件性能等级
-    const PREMIUM: u8 = 2;
-    const ULTIMATE: u8 = 3;
+ 
 
-    // 游戏状态对象（庄家）
+    
    public struct GameState has key {
         id: UID,
         treasury: Balance<SUI>,
         total_pool: u64,
         maintenance_fund: u64
     }
-    // 赛车结构
-    public struct Car has key, store {
+     public struct Car has key, store  {
         id: UID,
         engine_level: u8,
         price: u64,
         url:String
     }
 
-    // 车手结构
    public struct Driver has key, store {
         id: UID,
         name: String,
@@ -46,7 +36,10 @@ module f1_car_game::f1_car_game {
         available: bool,
         url:String
     }
-
+    public struct DriverLibrary has key, store {
+        id: UID,
+        available_drivers: vector<Driver>
+    }
 
        public  struct GamePool has key, store {
         id: UID,
@@ -54,17 +47,13 @@ module f1_car_game::f1_car_game {
         total_pool: u64,
         maintenance_fund: u64,
     }
-
-    // 玩家状态
-    // public  struct Player has key {
-    //     id: UID,
-    //     guesses_remaining: u8,
-    //     owned_driver: Option<Driver>,
-    //     owned_car: Option<Car>,
-    //     total_investment: u64
-    // }
-
-    // 比赛结果事件
+  // result
+  public  struct BuyResult has copy, drop {
+        player: address,
+        reward: u64
+    }
+   
+    // result
   public  struct RaceResult has copy, drop {
         player: address,
         position: u8,
@@ -82,7 +71,6 @@ module f1_car_game::f1_car_game {
     }
 
       
-    // 初始化函数
      fun init(ctx: &mut TxContext) {   
 
         let adminCap = F1CarGameAdminCap{id:object::new(ctx)};
@@ -121,7 +109,6 @@ module f1_car_game::f1_car_game {
     // 添加新的公共函数用于创建车手
   public entry fun create_new_driver(
     driver_library: &mut DriverLibrary,
-    game_state: &GameState,
     name: String,
     team: String,
     skill: u8,
@@ -148,10 +135,7 @@ public fun get_available_drivers(driver_library: &DriverLibrary): &vector<Driver
     &driver_library.available_drivers
 }
 
-public struct DriverLibrary has key, store {
-    id: UID,
-    available_drivers: vector<Driver>
-}
+
 
     // 购买游戏币
     public entry fun buy_game_tokens(
@@ -167,11 +151,16 @@ public struct DriverLibrary has key, store {
         
         let payment_balance = coin::split(payment, amount, ctx);
         
-        balance::join(&mut game_state.treasury, coin::into_balance(payment_balance));
+        balance::join(&mut game_state.treasury, into_balance(payment_balance));
+         
+          event::emit(BuyResult {
+            player: sender(ctx),
+            reward: payment_balance.value()
+        });
     }
 
     // 庄家获取余额
-    public fun get_treasury_balance(_adminCap: &F1CarGameAdminCap, game_state: &mut GameState, amount: u64, ctx: &mut TxContext): u64 {
+    public fun get_treasury_balance(_adminCap: &F1CarGameAdminCap, game_state: &mut GameState, amount: u64, ctx: &mut TxContext) {
         let out_balance = balance::split(&mut game_state.treasury, 1);
         let out_coin = coin::from_balance(out_balance, ctx);
         transfer::public_transfer(out_coin, tx_context::sender(ctx));
@@ -204,7 +193,7 @@ public struct DriverLibrary has key, store {
         // };
     } 
     // 计算比赛结果和奖励
-   public   fun calculate_race_result(
+   public  fun calculate_race_result(
         car: &Car,
         driver: &Driver,
         game_state: &mut GameState,
@@ -219,7 +208,7 @@ public struct DriverLibrary has key, store {
             public_transfer(out_coin, sender(ctx));
              0
                  }
-        else if (total_value >= 8) { 
+        else if (total_value > 8) { 
             out_balance = balance::split(&mut game_state.treasury,game_state.total_pool * 50 / 100 );
             let out_coin = from_balance(out_balance,ctx);
             public_transfer(out_coin, sender(ctx));
@@ -240,28 +229,6 @@ public struct DriverLibrary has key, store {
 
     }
 
-   
-
-    // // 发放奖励
-    // public entry fun distribute_reward(
-    //     game_state: &mut GameState,
-    //     player_addr: address,
-    //     reward_amount: u64,
-    //     ctx: &mut TxContext
-    // ) {
-    //     let reward_coin = coin::from_balance(
-    //         balance::split(&mut game_state.treasury, reward_amount),
-    //         ctx
-    //     );
-    //     transfer::public_transfer(reward_coin, player_addr);
-        
-    //     event::emit(RaceResult {
-    //         player: player_addr,
-    //         position: 1,
-    //         reward: reward_amount
-    //     });
-    // }
-
     public entry fun create_new_car(
     car_library: &mut CarLibrary,
     engine: u8,
@@ -279,17 +246,22 @@ public struct DriverLibrary has key, store {
     };
     
     vector::push_back(&mut car_library.available_cars, new_car);
+
 }
+
+entry fun roll_dice(r: &Random,car_library: &CarLibrary, ctx: &mut TxContext): u64 {
+        let mut generator = new_generator(r, ctx); 
+        let user_length = vector::length(&car_library.available_cars);
+        let result = random::generate_u64_in_range(&mut generator, 0, user_length);
+        result
+    }
 
 // 添加获取可用赛车的函数
-public fun get_available_cars(car_library: &CarLibrary): &vector<Car> {
-    &car_library.available_cars; // 返回可用赛车的引用
-    // 随机获取里面的赛车
-    let random_index = random::rand_u64() % vector::length(&car_library.available_cars);
+ public fun get_random_car(r: &Random,car_library: &CarLibrary,ctx: &mut TxContext): &Car {
+ let random_index = roll_dice(r, car_library, ctx);
     vector::borrow(&car_library.available_cars, random_index)
 }
-
-//  
+  
  public entry fun update_car(car:&mut Car, url:String) {
         car.url = url;
     }
@@ -317,7 +289,7 @@ public fun read_driver_skill(driver:&Driver):u8 {
     driver.url
 }
 
-// get car
+//get car
 public fun read_car_url(car:&Car):String {
     car.url
 }
