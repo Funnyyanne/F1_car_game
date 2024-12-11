@@ -62,7 +62,7 @@ export function HeroSection() {
                 fontWeight: 'bold',
               }}
             >
-              开始购买选手
+              开始游戏
             </Button>
           </Box>
 

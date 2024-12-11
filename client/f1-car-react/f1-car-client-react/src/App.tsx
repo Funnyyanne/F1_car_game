@@ -23,12 +23,7 @@ function App() {
       
      <HeroSection />
       
-       {/* 其他内容区域 */}
-      <div>
-       <h1 className="text-3xl font-bold text-center my-8">
-        Available F1 Drivers
-     </h1>
-     </div>
+
      </>
   );
 }

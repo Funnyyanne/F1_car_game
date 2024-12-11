@@ -14,7 +14,11 @@ const carImages = [
   '/images/hans.jpeg',
   '/images/ferrari.jpeg',
 ];
-
+interface AvaliableCarsProps {
+    onSelectCar: (carId: string) => void;
+    selectedCarId: string | null;
+    disabled: boolean;
+  }
 export function AvaliableCars() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [selectedCar, setSelectedCar] = useState<string | null>(null); // 添加选中状态
