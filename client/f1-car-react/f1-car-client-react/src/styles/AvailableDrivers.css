@@ -1,0 +1,37 @@
+.drivers-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .drivers-scroll {
+    display: flex;
+    gap: 1.5rem;
+    animation: scroll 50s linear infinite;
+    width: fit-content;
+  }
+  
+  .driver-card {
+    flex: 0 0 300px; /* 固定宽度 */
+  }
+  
+  .driver-card.selected {
+    ring: 4px;
+    ring-color: rgb(249 115 22);
+    ring-opacity: 75;
+    box-shadow: 0 0 15px rgba(249,115,22,0.5);
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%); /* 移动距离为一组卡片的宽度 */
+    }
+  }
+  
+  /* 当用户悬停时暂停动画 */
+  .drivers-scroll:hover {
+    animation-play-state: paused;
+  }

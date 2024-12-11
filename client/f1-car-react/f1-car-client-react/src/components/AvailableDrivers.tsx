@@ -70,7 +70,7 @@ export function AvailableDrivers() {
         {drivers.slice(0, -1).map((driver) => (
           <div 
             key={driver.id} 
-            className={`bg-blue-500 mx-4 cursor-pointer ${selectedDriver?.id === driver.id ? 'ring-4 ring-yellow-500' : ''}`}
+            className={`bg-blue-500 mx-4 cursor-pointer ${selectedDriver?.id === driver.id ? 'ring-4 ring-orange-500 ring-opacity-75 shadow-[0_0_15px_rgba(249,115,22,0.5)]' : ''}`}
             onClick={() => setSelectedDriver(driver)}
           >
             <div className="w-full max-w-xs bg-gray-800 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow">

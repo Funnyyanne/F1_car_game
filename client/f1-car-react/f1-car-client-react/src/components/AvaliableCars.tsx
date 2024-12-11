@@ -17,6 +17,8 @@ const carImages = [
 
 export function AvaliableCars() {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [selectedCar, setSelectedCar] = useState<string | null>(null); // 添加选中状态
+
   const { data, isPending, error } = useSuiClientQuery("getObject", {
     id: CAR_LIBRARY,
     options: {
@@ -74,13 +76,26 @@ export function AvaliableCars() {
           transition: 'transform 0.05s linear'
         }}>
           {availableCars.map((car, index) => (
-            <div key={car.fields.id.id} style={{ 
-              border: '1px solid #ccc',
-              margin: '0 10px',
-              padding: '10px',
-              minWidth: '200px',
-              flex: '0 0 auto'
-            }}>
+            <div 
+              key={car.fields.id.id} 
+              onClick={() => setSelectedCar(car.fields.id.id)}
+              style={{ 
+                border: selectedCar === car.fields.id.id 
+                  ? '3px solid #FFA500' // 选中时显示亮橙色边框
+                  : '1px solid #ccc',
+                margin: '0 10px',
+                padding: '10px',
+                minWidth: '200px',
+                flex: '0 0 auto',
+                cursor: 'pointer', // 添加鼠标指针样式
+                transition: 'all 0.3s ease', // 添加过渡效果
+                transform: selectedCar === car.fields.id.id 
+                  ? 'scale(1.02)' // 选中时略微放大
+                  : 'scale(1)',
+                boxShadow: selectedCar === car.fields.id.id 
+                  ? '0 4px 8px rgba(255, 165, 0, 0.3)' // 选中时添加阴影效果
+                  : 'none'
+              }}>
               <img 
                 src={car.fields.url || randomCarImages[index]} 
                 alt={car.fields.name}

@@ -4,6 +4,8 @@ import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes";
 import "../styles/HeroSection.css";
 import DriverGallery from "./DriverGalley";
 import { F1GameContract } from "../F1GameContract";
+import { AvailableDrivers } from './AvailableDrivers';
+import { AvaliableCars } from './AvaliableCars';
 export function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false);
 	const currentAccount = useCurrentAccount();
@@ -97,7 +99,9 @@ export function HeroSection() {
         </Flex>
       </Container>
     </Box>
-    <DriverGallery isConnected ={isLoaded} currentAccount={currentAccount}/>
+    {/* <DriverGallery isConnected ={isLoaded} currentAccount={currentAccount}/> */}
+    <AvailableDrivers/>
+    <AvaliableCars/>
     </>
    
     
