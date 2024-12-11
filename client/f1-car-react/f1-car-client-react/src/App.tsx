@@ -1,7 +1,8 @@
-import { Box, Container, Flex, Heading } from "@radix-ui/themes";
+import { Box, Flex, Heading } from "@radix-ui/themes";
 import { HeroSection } from "./components/HeroSection";
 import { AvailableDrivers } from './components/AvailableDrivers';
-
+// import { ObjectDetails } from './components/Test';
+import { AvaliableCars } from './components/AvaliableCars';
 function App() {
   return (
     <>
@@ -31,6 +32,7 @@ function App() {
         Available F1 Drivers
      </h1>
      <AvailableDrivers />
+     <AvaliableCars />
      </div>
      </>
   );

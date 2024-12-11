@@ -7,10 +7,10 @@ import { DRIVER_LIBRARY } from '../constants';
 
 export function AvailableDrivers() {
   const [driverScrollPosition, setDriverScrollPosition] = useState(0);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      
-
       // 赛车手滚动
       setDriverScrollPosition((prev) => {
         const step = 0.1; // 减小步长使滚动更平滑
@@ -21,8 +21,9 @@ export function AvailableDrivers() {
       });
     }, 50);
 
-return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
+
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +68,11 @@ return () => clearInterval(interval);
             }}>
               {/* 排除最后一个driver因为重复数据 */}
         {drivers.slice(0, -1).map((driver) => (
-          <div key={driver.id} className="bg-blue-500 mx-4">
+          <div 
+            key={driver.id} 
+            className={`bg-blue-500 mx-4 cursor-pointer ${selectedDriver?.id === driver.id ? 'ring-4 ring-yellow-500' : ''}`}
+            onClick={() => setSelectedDriver(driver)}
+          >
             <div className="w-full max-w-xs bg-gray-800 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow">
               <img
                 src={`/images/${driver.name}.jpg`}
@@ -97,12 +102,17 @@ return () => clearInterval(interval);
                 <p className="text-gray-300">Price: {driver.price} SUI</p>
                 {driver.available && (
                   <button
-                    className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                    onClick={() => {
+                    className={`w-full mt-4 ${
+                      selectedDriver?.id === driver.id 
+                      ? 'bg-yellow-600 hover:bg-yellow-700' 
+                      : 'bg-blue-600 hover:bg-blue-700'
+                    } text-white font-bold py-2 px-4 rounded transition-colors`}
+                    onClick={(e) => {
+                      e.stopPropagation();
                       console.log('Buy driver:', driver.id);
                     }}
                   >
-                    Buy Driver
+                    {selectedDriver?.id === driver.id ? 'Selected' : 'Buy Driver'}
                   </button>
                 )}
               </div>
