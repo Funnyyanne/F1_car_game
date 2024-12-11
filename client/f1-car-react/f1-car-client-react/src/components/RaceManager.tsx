@@ -1,4 +1,4 @@
-import { useSuiClient, useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
+import { useSuiClient, useSignAndExecuteTransactionBlock,useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import { useState } from 'react';
 import { F1GameContract, Driver } from '../F1GameContract';
 import { GAME_STATE } from '../constants';
@@ -16,7 +16,7 @@ export function RaceManager() {
 
   const suiClient = useSuiClient();
   const gameContract = new F1GameContract(suiClient);
-  const { mutate: signAndExecute } = useSignAndExecuteTransactionBlock();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
   // Handle driver purchase
   const handleBuyDriver = async (driver: Driver) => {

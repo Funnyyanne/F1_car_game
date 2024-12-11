@@ -19,9 +19,13 @@ interface AvaliableCarsProps {
     selectedCarId: string | null;
     disabled: boolean;
   }
-export function AvaliableCars() {
+  
+  export function AvaliableCars({
+    onSelectCar,
+    selectedCarId,
+    disabled
+  }: AvaliableCarsProps) {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [selectedCar, setSelectedCar] = useState<string | null>(null); // 添加选中状态
 
   const { data, isPending, error } = useSuiClientQuery("getObject", {
     id: CAR_LIBRARY,
@@ -58,6 +62,7 @@ export function AvaliableCars() {
   if (error) return <Text>Error: {error.message}</Text>;
   if (!data.data) return <Text>Not found</Text>;
   console.log(data)
+  
   const objectFields = data.data.content.fields;
   const availableCars = objectFields.available_cars;
 
