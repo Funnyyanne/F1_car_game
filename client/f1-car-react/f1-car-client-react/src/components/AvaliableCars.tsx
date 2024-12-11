@@ -62,7 +62,6 @@ interface AvaliableCarsProps {
   if (error) return <Text>Error: {error.message}</Text>;
   if (!data.data) return <Text>Not found</Text>;
   console.log(data)
-  
   const objectFields = data.data.content.fields;
   const availableCars = objectFields.available_cars;
 

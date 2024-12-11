@@ -1,5 +1,7 @@
 import { Box, Flex, Heading } from "@radix-ui/themes";
 import { HeroSection } from "./components/HeroSection";
+import { RaceManager } from "./components/RaceManager";
+
 function App() {
   return (
     <>
@@ -22,7 +24,7 @@ function App() {
       </Flex> 
       
      <HeroSection />
-      
+     {/* <RaceManager /> */}
 
      </>
   );

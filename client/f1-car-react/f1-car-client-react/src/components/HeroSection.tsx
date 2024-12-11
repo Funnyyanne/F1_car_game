@@ -6,9 +6,14 @@ import DriverGallery from "./DriverGalley";
 import { F1GameContract } from "../F1GameContract";
 import { AvailableDrivers } from './AvailableDrivers';
 import { AvaliableCars } from './AvaliableCars';
+import { RaceManager } from './RaceManager';
+import { useNavigate } from 'react-router-dom';
+
 export function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false);
-	const currentAccount = useCurrentAccount();
+  const currentAccount = useCurrentAccount();
+  const navigate = useNavigate();
+
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -61,6 +66,7 @@ export function HeroSection() {
                 color: 'white',
                 fontWeight: 'bold',
               }}
+              onClick={() => navigate('/race-manager')}
             >
               开始游戏
             </Button>
@@ -100,10 +106,8 @@ export function HeroSection() {
       </Container>
     </Box>
     {/* <DriverGallery isConnected ={isLoaded} currentAccount={currentAccount}/> */}
-    <AvailableDrivers/>
-    <AvaliableCars/>
+    {/* <AvailableDrivers/> */}
+    {/* <AvaliableCars/> */}
     </>
-   
-    
   );
 }

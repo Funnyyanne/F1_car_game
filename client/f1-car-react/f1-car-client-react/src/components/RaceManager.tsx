@@ -1,4 +1,4 @@
-import { useSuiClient, useSignAndExecuteTransactionBlock,useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import { useSuiClient,useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import { useState } from 'react';
 import { F1GameContract, Driver } from '../F1GameContract';
 import { GAME_STATE } from '../constants';
