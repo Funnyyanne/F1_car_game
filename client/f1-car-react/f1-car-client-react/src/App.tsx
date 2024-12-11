@@ -1,10 +1,11 @@
 import { Box, Container, Flex, Heading } from "@radix-ui/themes";
 import { HeroSection } from "./components/HeroSection";
+import { AvailableDrivers } from './components/AvailableDrivers';
 
 function App() {
   return (
     <>
-      {/* <Flex
+    <Flex
         position="sticky"
         top="0"
         px="4"
@@ -20,12 +21,18 @@ function App() {
         <Box>
           <Heading>F1 Dream Team</Heading>
         </Box>
-      </Flex> */}
+      </Flex> 
       
-      <HeroSection />
+     <HeroSection />
       
-      {/* 其他内容区域 */}
-    </>
+       {/* 其他内容区域 */}
+      <div>
+       <h1 className="text-3xl font-bold text-center my-8">
+        Available F1 Drivers
+     </h1>
+     <AvailableDrivers />
+     </div>
+     </>
   );
 }
 export default App

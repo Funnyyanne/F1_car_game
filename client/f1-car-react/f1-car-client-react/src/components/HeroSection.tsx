@@ -3,12 +3,27 @@ import { ConnectButton ,useCurrentAccount} from "@mysten/dapp-kit";
 import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes";
 import "../styles/HeroSection.css";
 import DriverGallery from "./DriverGalley";
+import { F1GameContract } from "../F1GameContract";
 export function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false);
 	const currentAccount = useCurrentAccount();
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  const handleBuyTokens = async () => {
+    if (!currentAccount) return;
+
+    try {
+      const amount = 100; // 购买的游戏币数量
+      const tx = await F1GameContract.buyGameTokens(currentAccount.address, amount);
+      // 这里需要添加交易签名和发送的逻辑
+
+      // 购买成功后可以添加提示或刷新页面
+    } catch (error) {
+      console.error("Error buying game tokens:", error);
+    }
+  };
 
   return (
     <>
